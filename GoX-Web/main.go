@@ -1,23 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"Web"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/hello", helloHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
+	r := Web.New()
+	r.GET("/", func(c *Web.Context) {
+		c.HTML(http.StatusOK, "<h1>Hello World</h1>")
+	})
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
-}
+	r.GET("/hello", func(c *Web.Context) {
+		c.String(http.StatusOK, "<h1>Hello %s, you're at $s</h1>", c.Query("name"), c.Path)
+	})
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	for k, v := range r.Header {
-		fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
-	}
+	r.POST("/login", func(c *Web.Context) {
+		c.Json(http.StatusOK, Web.H{
+			"username": c.PostForm("username"),
+			"password": c.PostForm("password"),
+		})
+	})
+
+	r.Run(":8080")
 }
