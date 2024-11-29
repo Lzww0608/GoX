@@ -16,8 +16,14 @@ type Context struct {
 	// request info
 	Path   string
 	Method string
+	Params map[string]string
 	//response info
 	StatusCode int
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
 
 func newContext(writer http.ResponseWriter, request *http.Request) *Context {
@@ -121,10 +127,6 @@ func (c *Context) File(file string) {
 
 func (c *Context) Redirect(status int, url string) {
 	http.Redirect(c.Writer, c.Request, url, status)
-}
-
-func (c *Context) Param(key string) string {
-	return c.Request.URL.Query().Get(key)
 }
 
 func (c *Context) Data(status int, data []byte) {
