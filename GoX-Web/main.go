@@ -7,21 +7,34 @@ import (
 
 func main() {
 	r := Web.New()
-	r.GET("/", func(c *Web.Context) {
-		c.HTML(http.StatusOK, "<h1>Hello GoX</h1>")
+	r.GET("/index", func(c *Web.Context) {
+		c.HTML(http.StatusOK, "<h1>Index Page</h1>")
 	})
+	v1 := r.Group("/v1")
+	{
+		v1.GET("/", func(c *Web.Context) {
+			c.HTML(http.StatusOK, "<h1>Hello Web</h1>")
+		})
 
-	r.GET("/hello", func(c *Web.Context) {
-		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
-	})
+		v1.GET("/hello", func(c *Web.Context) {
+			// expect /hello?name=Lzww
+			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+		})
+	}
+	v2 := r.Group("/v2")
+	{
+		v2.GET("/hello/:name", func(c *Web.Context) {
+			// expect /hello/Lzww
+			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
+		})
+		v2.POST("/login", func(c *Web.Context) {
+			c.Json(http.StatusOK, Web.H{
+				"username": c.PostForm("username"),
+				"password": c.PostForm("password"),
+			})
+		})
 
-	r.GET("/hello/:name", func(c *Web.Context) {
-		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
-	})
-
-	r.GET("/assets/*filepath", func(c *Web.Context) {
-		c.Json(http.StatusOK, Web.H{"filepath": c.Param("filepath")})
-	})
+	}
 
 	r.Run(":8080")
 }
