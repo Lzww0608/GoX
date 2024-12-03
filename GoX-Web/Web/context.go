@@ -19,20 +19,37 @@ type Context struct {
 	Params map[string]string
 	//response info
 	StatusCode int
+	// middleware
+	handlers []HandleFunc
+	index    int
+}
+
+func newContext(w http.ResponseWriter, r *http.Request) *Context {
+	return &Context{
+		Path:    r.URL.Path,
+		Method:  r.Method,
+		Request: r,
+		Writer:  w,
+		index:   -1,
+	}
+}
+
+func (c *Context) Next() {
+	c.index++
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
+	}
+}
+
+func (c *Context) Fail(code int, err string) {
+	c.index = len(c.handlers)
+	c.Json(code, H{"message": err})
 }
 
 func (c *Context) Param(key string) string {
 	value, _ := c.Params[key]
 	return value
-}
-
-func newContext(writer http.ResponseWriter, request *http.Request) *Context {
-	return &Context{
-		Writer:  writer,
-		Request: request,
-		Path:    request.URL.Path,
-		Method:  request.Method,
-	}
 }
 
 func (c *Context) PostForm(key string) string {
@@ -73,10 +90,6 @@ func (c *Context) DelCookie(name string) {
 		MaxAge:   -1,
 		HttpOnly: true,
 	})
-}
-
-func (c *Context) Next() {
-	c.StatusCode++
 }
 
 func (c *Context) String(status int, format string, values ...interface{}) {
