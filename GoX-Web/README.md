@@ -5,4 +5,6 @@
 * [x] Add `Trie` for dynamic route, supporting two forms: `:name` `*filepath`
 * [x] Add group control
 * [x] Add middlewares
+* [x] Add static resource
+* [x] Add HTML template render
 

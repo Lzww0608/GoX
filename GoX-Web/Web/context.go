@@ -22,6 +22,8 @@ type Context struct {
 	// middleware
 	handlers []HandleFunc
 	index    int
+	//engine pointer
+	engine *Engine
 }
 
 func newContext(w http.ResponseWriter, r *http.Request) *Context {
@@ -98,10 +100,12 @@ func (c *Context) String(status int, format string, values ...interface{}) {
 	c.Writer.Write([]byte(fmt.Sprintf(format, values...)))
 }
 
-func (c *Context) HTML(status int, html string) {
+func (c *Context) HTML(status int, html string, data interface{}) {
 	c.SetHeader("Content-Type", "text/html")
 	c.Status(status)
-	c.Writer.Write([]byte(html))
+	if err := c.engine.htmlTemplates.ExecuteTemplate(c.Writer, html, data); err != nil {
+		c.Fail(500, err.Error())
+	}
 }
 
 func (c *Context) HTMLBlob(status int, b []byte) {
