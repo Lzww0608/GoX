@@ -7,4 +7,5 @@
 * [x] Add middlewares
 * [x] Add static resource
 * [x] Add HTML template render
+* [x] Add error handling mechanism
 
