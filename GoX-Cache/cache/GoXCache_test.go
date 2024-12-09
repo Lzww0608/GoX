@@ -48,7 +48,7 @@ func TestGet(t *testing.T) {
 		}
 	}
 
-	if view, err := gee.Get("unknown"); err == nil {
+	if view, err := GoX.Get("unknown"); err == nil {
 		t.Fatalf("the value of unknow should be empty, but %s got", view)
 	}
 }
