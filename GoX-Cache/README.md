@@ -5,4 +5,5 @@
 + [x] Add HTTP Server
 + [x] Add consistent hash
 + [x] Add distributed nodes
++ [x] Add singleflight to avoid cache breakdown
 
