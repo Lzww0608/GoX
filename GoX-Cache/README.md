@@ -4,3 +4,5 @@
 + [x] Add concurrency control
 + [x] Add HTTP Server
 + [x] Add consistent hash
++ [x] Add distributed nodes
+

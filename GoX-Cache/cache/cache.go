@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"GoX-Cache/cache/LRU"
+	"cache/LRU"
 	"sync"
 )
 
