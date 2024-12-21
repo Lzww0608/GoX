@@ -1,6 +1,7 @@
 package session
 
 import (
+	"GoX-ORM/dialect"
 	"database/sql"
 	"os"
 	"testing"
@@ -8,17 +9,20 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var TestDB *sql.DB
+var (
+	TestDB      *sql.DB
+	TestDial, _ = dialect.GetDialect("sqlite3")
+)
 
 func TestMain(m *testing.M) {
-	TestDB, _ = sql.Open("sqlite3", "../gee.db")
+	TestDB, _ = sql.Open("sqlite3", "../orm.db")
 	code := m.Run()
 	_ = TestDB.Close()
 	os.Exit(code)
 }
 
 func NewSession() *Session {
-	return New(TestDB)
+	return New(TestDB, TestDial)
 }
 
 func TestSession_Exec(t *testing.T) {

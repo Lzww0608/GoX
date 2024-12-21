@@ -1,19 +1,22 @@
 package GoX_ORM
 
 import (
+	"GoX-ORM/dialect"
 	"GoX-ORM/log"
 	"GoX-ORM/session"
 	"database/sql"
 )
 
 type Engine struct {
-	db *sql.DB
+	db      *sql.DB
+	dialect dialect.Dialect
 }
 
 func NewEngine(driver, source string) (e *Engine, err error) {
 	db, err := sql.Open(driver, source)
 	if err != nil {
 		log.Error(err)
+		return
 	}
 
 	// Send a ping to make sure the database connection is alive.
@@ -22,7 +25,14 @@ func NewEngine(driver, source string) (e *Engine, err error) {
 		return
 	}
 
-	e = &Engine{db: db}
+	// make sure the specific dialect exists
+	dial, ok := dialect.GetDialect(driver)
+	if !ok {
+		log.Errorf("dialect %s not support", driver)
+		return
+	}
+
+	e = &Engine{db: db, dialect: dial}
 	log.Info("connect database success")
 	return
 }
@@ -35,5 +45,5 @@ func (e *Engine) Close() {
 }
 
 func (e *Engine) NewSession() *session.Session {
-	return session.New(e.db)
+	return session.New(e.db, e.dialect)
 }
