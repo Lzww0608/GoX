@@ -7,3 +7,4 @@
   + [x] `Create` and `Drop` of database tables.
 + [x] Add `SELECT` and `INSERT`
 + [x] Add `DELETE` `UPDATE` `COUNT` and chain operation 
++ [x] Add `Hooks`
