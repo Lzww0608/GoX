@@ -9,3 +9,4 @@
 + [x] Add `DELETE` `UPDATE` `COUNT` and chain operation 
 + [x] Add `Hooks`
 + [x] Add `Transaction`
++ [x] Add `Migrate`
